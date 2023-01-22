@@ -67,7 +67,22 @@ screen.onkeypress(move_left, "a")
 screen.onkeypress(move_right, "d")
 
 while True:
-    
+
+    screen.update()
+
+    #Kontrola kolize s hranou obrazovky
+    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
+        time.sleep(2)
+        head.goto(0, 0)
+        head.direction = "stop"
+
+        #Skyjeme casti tela
+        for one_body_part in body_parts:
+            one_body_part.goto(1500, 1500)
+
+        #Vyprazdnime list s castmi tela (sede ctverecky)
+        body_parts.clear()
+
     if head.distance(apple) < 20:
         x = random.randint(-290, 290)
         y = random.randint(-290, 290)
@@ -80,6 +95,11 @@ while True:
         new_body_part.penup()
         body_parts.append(new_body_part)
 
+    for index in range(len(body_parts)-1, 0, -1):
+        x = body_parts[index -1].xcor()
+        y = body_parts[index -1].ycor()
+        body_parts[index].goto(x, y)
+
     if len(body_parts) > 0:
         x = head.xcor()
         y = head.ycor()
@@ -87,11 +107,12 @@ while True:
 
     move()
     time.sleep(0.1)
-    screen.update()
+    
 
 
 
 
 
 screen.exitonclick()
+
 
