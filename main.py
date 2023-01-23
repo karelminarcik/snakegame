@@ -2,6 +2,10 @@ from turtle import Turtle, Screen
 import time
 import random
 
+#Promenne
+score = 0
+highest_score = 0
+
 screen = Screen()
 
 screen.bgcolor("green")
@@ -25,10 +29,16 @@ apple.color("red")
 apple.penup()
 apple.goto(100, 100)
 
+#score
+score_sign = Turtle("square")
+score_sign.speed(0)
+score_sign.color("white")
+score_sign.penup()
+score_sign.hideturtle()
+score_sign.goto(0, 270)
+score_sign.write("Skore: 0  Nejvyssi skore: 0", align="center", font=("Arial", 18))
+
 body_parts = []
-
-
-
 
 # Funkce
 
@@ -47,16 +57,20 @@ def move():
         head.setx(x + 20)
 
 def move_up():
-    head.direction = "up"
+    if head.direction != "down":
+        head.direction = "up"
 
 def move_down():
-    head.direction = "down"
+    if head.direction != "up":
+        head.direction = "down"
 
 def move_right():
-    head.direction = "right"
+    if head.direction != "left":
+        head.direction = "right"
 
 def move_left():
-    head.direction = "left"
+    if head.direction != "right":
+        head.direction = "left"
 
 # Kliknuti na klavesy
 
@@ -80,9 +94,18 @@ while True:
         for one_body_part in body_parts:
             one_body_part.goto(1500, 1500)
 
-        #Vyprazdnime list s castmi tela (sede ctverecky)
+        #Vyprazdnime list s castmi tela (sede ctverecky) 
         body_parts.clear()
 
+
+        #Vyresetovani skore
+        score = 0
+        score_sign.clear()
+        score_sign.write(f"Skore: {score}  Nejvyssi skore: {highest_score}", align="center", font=("Arial", 18))
+
+
+
+    #kolize hlavy s jablkem, had sni jablko
     if head.distance(apple) < 20:
         x = random.randint(-290, 290)
         y = random.randint(-290, 290)
@@ -95,6 +118,15 @@ while True:
         new_body_part.penup()
         body_parts.append(new_body_part)
 
+        #Zvyseni skore 
+
+        score += 1
+
+        if score > highest_score:
+            highest_score = score
+        score_sign.clear()
+        score_sign.write(f"Skore: {score}  Nejvyssi skore: {highest_score}", align="center", font=("Arial", 18))
+
     for index in range(len(body_parts)-1, 0, -1):
         x = body_parts[index -1].xcor()
         y = body_parts[index -1].ycor()
@@ -106,6 +138,26 @@ while True:
         body_parts[0].goto(x, y)
 
     move()
+
+    # Hlava narazila do tela
+    for one_body_part in body_parts:
+        if one_body_part.distance(head) < 20:
+            time.sleep(2)
+            head.goto(0, 0)
+            head.direction = "stop"
+
+            #Skyjeme casti tela
+            for one_body_part in body_parts:
+                one_body_part.goto(1500, 1500)
+
+            #Vyprazdnime list s castmi tela (sede ctverecky)
+            body_parts.clear()
+            
+            #Vyresetovani skore
+            score = 0
+            score_sign.clear()
+            score_sign.write(f"Skore: {score}  Nejvyssi skore: {highest_score}", align="center", font=("Arial", 18))
+
     time.sleep(0.1)
     
 
